@@ -28,6 +28,9 @@ export const productService = {
 
   getRelatedProducts: (slug: string, type: 'similar' | 'recommended' | 'addons' = 'similar') => 
     api.get<ApiResponse<Product[]>>(`/products/${slug}/related/${type}`),
+
+  getBannerProducts: () => 
+    api.get<ApiResponse<Product[][][]>>('/products/banner-products'),
 };
 
 export default productService;
