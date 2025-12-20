@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  nextjs:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: bme-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=http://api:8000/api/v1
+    restart: unless-stopped
+    networks:
+      - bme-network
+
+  # Development service
+  nextjs-dev:
+    image: node:20-alpine
+    container_name: bme-frontend-dev
+    working_dir: /app
+    volumes:
+      - ..:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=development
+      - NEXT_PUBLIC_API_URL=http://localhost:8000/api/v1
+    command: sh -c "npm install && npm run dev"
+    profiles:
+      - dev
+
+networks:
+  bme-network:
+    external: true
+
