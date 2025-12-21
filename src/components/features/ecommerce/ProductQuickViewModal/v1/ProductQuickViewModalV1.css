@@ -1,0 +1,23 @@
+/* Product Quick View Modal V1 Styles */
+.product-quick-view-modal-v1-content {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  padding: 40px;
+}
+
+/* Responsive Design */
+@media (max-width: 968px) {
+  .product-quick-view-modal-v1-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 24px;
+  }
+}
+
+@media (max-width: 640px) {
+  .product-quick-view-modal-v1-content {
+    padding: 20px;
+  }
+}
+

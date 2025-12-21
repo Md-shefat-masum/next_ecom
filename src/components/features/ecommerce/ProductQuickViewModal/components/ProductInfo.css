@@ -1,0 +1,122 @@
+/* Product Info Styles */
+.product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.product-info-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--bme-black);
+  line-height: 1.3;
+  margin: 0;
+}
+
+.product-info-price {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.price-label {
+  font-size: 16px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.price-value {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--bme-orange);
+}
+
+.product-info-total {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 16px;
+  background: var(--primary-light);
+  border-radius: 8px;
+  border: 2px solid var(--bme-orange);
+}
+
+.total-label {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--bme-black);
+}
+
+.total-value {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--bme-orange);
+}
+
+.product-info-description {
+  padding-top: 24px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.description-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--bme-black);
+  margin-bottom: 12px;
+}
+
+.description-content {
+  font-size: 14px;
+  color: #4b5563;
+  line-height: 1.6;
+}
+
+.description-content ul,
+.description-content ol {
+  margin-left: 20px;
+  margin-top: 8px;
+}
+
+.description-content li {
+  margin-bottom: 4px;
+}
+
+.product-info-add-to-cart {
+  width: 100%;
+  padding: 16px 24px;
+  background: var(--bme-orange);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  margin-top: auto;
+}
+
+.product-info-add-to-cart:hover:not(:disabled) {
+  background: var(--primary-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 165, 0, 0.3);
+}
+
+.product-info-add-to-cart:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+@media (max-width: 968px) {
+  .product-info-title {
+    font-size: 24px;
+  }
+}
+

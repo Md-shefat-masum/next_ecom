@@ -1,0 +1,21 @@
+/* Error State Styles */
+.modal-error {
+  padding: 60px 40px;
+  text-align: center;
+}
+
+.error-close-button {
+  margin-top: 16px;
+  padding: 8px 16px;
+  background: var(--bme-orange);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.error-close-button:hover {
+  background: var(--primary-hover);
+}
+
