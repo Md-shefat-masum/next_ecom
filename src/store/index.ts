@@ -16,6 +16,7 @@ import {
   configReducer,
   searchReducer,
   blogReducer,
+  modalReducer,
 } from './slices';
 
 export const store = configureStore({
@@ -36,6 +37,7 @@ export const store = configureStore({
     config: configReducer,
     search: searchReducer,
     blog: blogReducer,
+    modal: modalReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

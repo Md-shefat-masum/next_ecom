@@ -9,11 +9,11 @@ export const useProducts = (params?: ProductQueryParams) => {
   });
 };
 
-export const useProduct = (slug: string) => {
+export const useProduct = (slug: string, options?: { enabled?: boolean }) => {
   return useQuery({
     queryKey: ['product', slug],
     queryFn: () => productService.getProduct(slug),
-    enabled: !!slug,
+    enabled: options?.enabled !== undefined ? options.enabled : !!slug,
   });
 };
 

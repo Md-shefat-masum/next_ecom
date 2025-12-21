@@ -7,6 +7,7 @@ import MainHeader from '@/components/layout/PublicLayout/MainHeader';
 import CategoryHeader from '@/components/layout/PublicLayout/CategoryHeader';
 import Footer from '@/components/layout/PublicLayout/Footer';
 import { CartIcon, CartCanvas } from '@/components/features/cart';
+import ProductQuickViewModal from '@/components/features/ecommerce/ProductQuickViewModal';
 
 export default function PublicLayout({
   children,
@@ -37,6 +38,9 @@ export default function PublicLayout({
       
       {/* Cart Canvas */}
       <CartCanvas isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+
+      {/* Product Quick View Modal */}
+      <ProductQuickViewModal />
     </div>
   );
 }

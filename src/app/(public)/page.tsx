@@ -1,6 +1,6 @@
-import Link from 'next/link';
 import { Truck, Shield, Headphones, RefreshCw } from 'lucide-react';
 import Hero from '@/components/features/ecommerce/home/Hero';
+import FeaturedCategoryProducts from '@/components/features/ecommerce/home/FeaturedCategoryProducts';
 
 export default function HomePage() {
   return (
@@ -52,25 +52,7 @@ export default function HomePage() {
       </section>
 
       {/* Featured Categories */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">Shop by Category</h2>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-            {['Electronics', 'Fashion', 'Home', 'Beauty', 'Sports', 'Books'].map((cat) => (
-              <Link
-                key={cat}
-                href={`/categories/${cat.toLowerCase()}`}
-                className="group p-6 bg-gray-50 rounded-xl text-center hover:bg-primary-light transition"
-              >
-                <div className="w-16 h-16 mx-auto mb-4 bg-white rounded-full flex items-center justify-center group-hover:bg-primary-light transition">
-                  <span className="text-2xl">📦</span>
-                </div>
-                <h3 className="font-medium group-hover:text-bme-orange transition">{cat}</h3>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      <FeaturedCategoryProducts />
 
       {/* CTA Section */}
       <section className="py-16 bg-bme-orange">

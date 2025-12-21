@@ -1,76 +1,107 @@
 'use client';
 
 import Link from 'next/link';
-import { ChevronDown } from 'lucide-react';
-import { useState } from 'react';
-
-const categories = [
-  { name: 'Electronics', slug: 'electronics', subcategories: ['Phones', 'Laptops', 'Tablets', 'Accessories'] },
-  { name: 'Fashion', slug: 'fashion', subcategories: ['Men', 'Women', 'Kids', 'Shoes'] },
-  { name: 'Home & Garden', slug: 'home-garden', subcategories: ['Furniture', 'Decor', 'Kitchen', 'Garden'] },
-  { name: 'Sports', slug: 'sports', subcategories: ['Fitness', 'Outdoor', 'Team Sports', 'Water Sports'] },
-  { name: 'Beauty', slug: 'beauty', subcategories: ['Skincare', 'Makeup', 'Hair Care', 'Fragrances'] },
-  { name: 'Books', slug: 'books', subcategories: ['Fiction', 'Non-Fiction', 'Children', 'Educational'] },
-];
+import { useCategorySubcategoryBrands } from '@/lib/hooks/useCategories';
+import { CategorySubcategoryBrandSubcategory, CategorySubcategoryBrand } from '@/types';
+import './CategoryHeader.css';
 
 export default function CategoryHeader() {
-  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const { data: categoriesData, isLoading } = useCategorySubcategoryBrands();
+
+  // Split subcategories into columns (2 columns for better layout)
+  const splitIntoColumns = (items: CategorySubcategoryBrandSubcategory[], columns: number = 2): CategorySubcategoryBrandSubcategory[][] => {
+    const itemsPerColumn = Math.ceil(items.length / columns);
+    const result: CategorySubcategoryBrandSubcategory[][] = [];
+    for (let i = 0; i < columns; i++) {
+      result.push(items.slice(i * itemsPerColumn, (i + 1) * itemsPerColumn));
+    }
+    return result;
+  };
 
   return (
-    <nav className="bg-white border-b hidden lg:block">
+    <nav id="main-nav" className="navbar bg-white border-b hidden lg:block">
       <div className="container mx-auto px-4">
-        <ul className="flex items-center gap-1">
-          <li>
-            <Link href="/shop" className="px-4 py-3 hover:text-[var(--bme-orange)] transition font-medium inline-block">
-              All Products
-            </Link>
-          </li>
-          {categories.map((category) => (
-            <li 
-              key={category.slug}
-              className="relative"
-              onMouseEnter={() => setActiveCategory(category.slug)}
-              onMouseLeave={() => setActiveCategory(null)}
-            >
-              <Link 
-                href={`/categories/${category.slug}`}
-                className="px-4 py-3 hover:text-[var(--bme-orange)] transition inline-flex items-center gap-1"
-              >
-                {category.name}
-                <ChevronDown className="w-4 h-4" />
-              </Link>
+        <ul className="nav-list navbar-nav flex items-center gap-1">
+          {isLoading ? (
+            <li className="nav-item px-4 py-3 text-gray-400">Loading...</li>
+          ) : (
+            categoriesData?.map((category) => {
+              const hasSubcategories = category.sub_categories && category.sub_categories.length > 0;
+              const subcategoryColumns = hasSubcategories ? splitIntoColumns(category.sub_categories, 1) : [];
 
-              {/* Dropdown */}
-              {activeCategory === category.slug && (
-                <div className="absolute top-full left-0 w-48 bg-white shadow-lg rounded-lg py-2 z-50">
-                  {category.subcategories.map((sub) => (
-                    <Link
-                      key={sub}
-                      href={`/categories/${category.slug}/${sub.toLowerCase().replace(' ', '-')}`}
-                      className="block px-4 py-2 hover:bg-[var(--primary-light)] hover:text-[var(--bme-orange)] transition"
-                    >
-                      {sub}
-                    </Link>
-                  ))}
-                </div>
-              )}
-            </li>
-          ))}
-          <li>
-            <Link href="/brands" className="px-4 py-3 hover:text-[var(--bme-orange)] transition inline-block">
-              Brands
-            </Link>
-          </li>
-          <li>
-            <Link href="/collections" className="px-4 py-3 hover:text-[var(--bme-orange)] transition inline-block">
-              Collections
-            </Link>
-          </li>
-          <li>
-            <Link href="/blog" className="px-4 py-3 hover:text-[var(--bme-orange)] transition inline-block">
-              Blog
-            </Link>
-          </li>
+              return (
+                <li 
+                  key={category.slug}
+                  className={`nav-item main_category_item ${hasSubcategories ? 'has-child multi-col' : ''}`}
+                >
+                  <Link 
+                    href={`/categories/${category.slug}`}
+                    className="nav-link px-[5px] py-3 hover:text-bme-orange transition"
+                  >
+                    {category.name}
+                  </Link>
+
+                  {/* Level 1 Dropdown - Subcategories */}
+                  {hasSubcategories && (
+                    <div className="drop-down drop-menu-1">
+                      {subcategoryColumns.map((column, colIndex) => (
+                        <ul key={colIndex}>
+                          {column.map((subcategory) => {
+                            const hasBrands = subcategory.brands && subcategory.brands.length > 0;
+                            return (
+                              <li 
+                                key={subcategory.slug}
+                                className={`nav-item ${hasBrands ? 'has-child' : ''}`}
+                              >
+                                <Link
+                                  href={`/categories/${category.slug}/${subcategory.slug}`}
+                                  className="nav-link"
+                                >
+                                  {subcategory.name}
+                                </Link>
+
+                                {/* Level 2 Dropdown - Brands */}
+                                {hasBrands && (
+                                  <ul className="drop-down drop-menu-2">
+                                    {subcategory.brands.map((brand: CategorySubcategoryBrand) => {
+                                      const brandUrl = brand.category_sub_category_brand_slug 
+                                        ? `/categories/${category.slug}/${subcategory.slug}/${brand.category_sub_category_brand_slug}`
+                                        : `/brands/${brand.slug}`;
+                                      return (
+                                        <li key={brand.slug} className="nav-item">
+                                          <Link
+                                            href={brandUrl}
+                                            className="nav-link"
+                                          >
+                                            {brand.name}
+                                          </Link>
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                )}
+                              </li>
+                            );
+                          })}
+                        </ul>
+                      ))}
+                      {/* Show All Link */}
+                      <ul>
+                        <li>
+                          <Link 
+                            href={`/categories/${category.slug}`}
+                            className="see-all"
+                          >
+                            Show All {category.name}
+                          </Link>
+                        </li>
+                      </ul>
+                    </div>
+                  )}
+                </li>
+              );
+            })
+          )}
         </ul>
       </div>
     </nav>

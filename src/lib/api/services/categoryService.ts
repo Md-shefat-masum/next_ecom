@@ -1,5 +1,5 @@
 import { api } from '../client';
-import { ApiResponse, Category } from '@/types';
+import { ApiResponse, Category, CategorySubcategoryBrandCategory } from '@/types';
 
 export const categoryService = {
   getAllCategories: () => 
@@ -28,6 +28,12 @@ export const categoryService = {
 
   getSubcategoryBrands: (categorySlug: string, subcategorySlug: string) => 
     api.get<ApiResponse<unknown[]>>(`/categories/category/${categorySlug}/subcategory/${subcategorySlug}/brands`),
+
+  getCategorySubcategoryBrands: () =>
+    api.get<ApiResponse<CategorySubcategoryBrandCategory[]>>('/category-subcategory-brands'),
+
+  getFeaturedCategories: () =>
+    api.get<ApiResponse<Category[]>>('/categories/featured-categories'),
 };
 
 export default categoryService;

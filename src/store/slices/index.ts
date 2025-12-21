@@ -14,6 +14,7 @@ export { default as notificationReducer } from './notificationSlice';
 export { default as configReducer } from './configSlice';
 export { default as searchReducer } from './searchSlice';
 export { default as blogReducer } from './blogSlice';
+export { default as modalReducer } from './modalSlice';
 
 // Re-export actions
 export * from './authSlice';
@@ -32,4 +33,5 @@ export * from './notificationSlice';
 export * from './configSlice';
 export * from './searchSlice';
 export * from './blogSlice';
+export * from './modalSlice';
 
