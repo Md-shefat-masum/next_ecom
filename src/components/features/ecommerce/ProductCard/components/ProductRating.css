@@ -1,0 +1,17 @@
+/* Product Rating Styles */
+.product-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.product-rating-stars {
+  color: var(--bme-orange);
+  font-size: 14px;
+}
+
+.product-rating-count {
+  font-size: 14px;
+  color: #6b7280;
+}
+

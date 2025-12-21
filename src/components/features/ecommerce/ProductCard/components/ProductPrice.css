@@ -1,0 +1,42 @@
+/* Product Price Styles */
+.product-price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.product-price-current {
+  font-weight: 700;
+  color: var(--bme-orange);
+}
+
+.product-price-original {
+  color: #9ca3af;
+  text-decoration: line-through;
+}
+
+/* Size variants */
+.product-price-small {
+  font-size: 16px;
+}
+
+.product-price-medium {
+  font-size: 18px;
+}
+
+.product-price-large {
+  font-size: 24px;
+}
+
+.product-price-discount-small {
+  font-size: 12px;
+}
+
+.product-price-discount-medium {
+  font-size: 14px;
+}
+
+.product-price-discount-large {
+  font-size: 16px;
+}
+

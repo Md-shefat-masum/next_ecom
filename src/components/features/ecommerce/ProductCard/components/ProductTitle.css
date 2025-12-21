@@ -1,0 +1,13 @@
+/* Product Title Styles */
+.product-title {
+  font-weight: 600;
+  color: var(--bme-black);
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: block;
+}
+
+.product-title:hover {
+  color: var(--bme-orange);
+}
+
