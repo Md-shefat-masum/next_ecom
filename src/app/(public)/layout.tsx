@@ -25,7 +25,9 @@ export default function PublicLayout({
       {/* Main Content */}
       <div className="flex-1 lg:ml-[60px] flex flex-col min-h-screen">
         <TopHeader />
+
         <MainHeader onMenuClick={() => setSidebarOpen(true)} />
+          
         <CategoryHeader />
         
         <main className="flex-1">{children}</main>

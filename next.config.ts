@@ -26,6 +26,11 @@ const nextConfig: NextConfig = {
         hostname: 'pos.bme.com.bd',
         pathname: '/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'posftp.bme.com.bd',
+        pathname: '/**',
+      },
     ],
   },
 };

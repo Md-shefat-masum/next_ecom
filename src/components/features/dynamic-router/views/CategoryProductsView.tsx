@@ -1,6 +1,6 @@
-'use client';
-
 import { RouteData } from '@/types';
+import type { CategoryProductsRoutePayload } from '@/types/route';
+import type { Product } from '@/types';
 import ProductCard from '@/components/features/ecommerce/ProductCard';
 import ProductFilters from '@/components/features/ecommerce/ProductFilters';
 
@@ -9,9 +9,27 @@ interface CategoryProductsViewProps {
   title?: string;
 }
 
+function normalizeProductForCard(product: Product) {
+  interface ProductWithPricing extends Product {
+    pricing?: { final_price?: number; discount_price?: number };
+    full_image_url?: string;
+  }
+  const p = product as ProductWithPricing;
+  return {
+    id: product.id,
+    name: product.name,
+    slug: product.slug,
+    price: p.pricing?.final_price ?? product.price ?? 0,
+    discount_price: p.pricing?.discount_price ?? product.discount_price,
+    image: p.full_image_url ?? product.image,
+    rating: product.average_rating,
+    reviews_count: product.reviews_count,
+  };
+}
+
 export default function CategoryProductsView({ data, title }: CategoryProductsViewProps) {
-  const categoryData = data.data as any;
-  const products = categoryData?.products || [];
+  const categoryData = data.data as CategoryProductsRoutePayload;
+  const products = (categoryData?.products ?? []) as Product[];
   const categoryName = categoryData?.name || title || 'Products';
 
   return (
@@ -24,15 +42,18 @@ export default function CategoryProductsView({ data, title }: CategoryProductsVi
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
-        <aside className="w-full lg:w-64 flex-shrink-0">
+        <aside className="w-full lg:w-64 shrink-0">
           <ProductFilters />
         </aside>
 
         <div className="flex-1">
           {products.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product: any) => (
-                <ProductCard key={product.id} product={product} />
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={normalizeProductForCard(product)}
+                />
               ))}
             </div>
           ) : (
@@ -45,4 +66,3 @@ export default function CategoryProductsView({ data, title }: CategoryProductsVi
     </div>
   );
 }
-

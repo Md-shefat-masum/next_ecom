@@ -30,6 +30,7 @@ export interface CategorySubcategoryBrand {
   brand_content?: string;
   category_sub_category_brand_id?: number;
   category_sub_category_brand_slug?: string;
+  url: string;
 }
 
 export interface CategorySubcategoryBrandSubcategory {

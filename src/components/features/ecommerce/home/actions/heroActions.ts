@@ -61,7 +61,7 @@ export function getProductImageUrl(product: BannerProduct | null): string {
 
     // If image is a relative path, prepend API base URL
     if (product.image && !product.image.startsWith('http')) {
-        const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000';
+        const apiBaseUrl = process.env.NEXT_PUBLIC_FILE_URL || '/';
         return `${apiBaseUrl}/${product.image}`;
     }
 
