@@ -6,24 +6,24 @@
   --bme-blue: #003366;
   --bme-orange: #FFA500;
   --bme-black: #111111;
-  
+
   /* Default Colors */
   --background: #ffffff;
   --foreground: #171717;
   --black: #111111;
   --link-color: #6b7280;
-  
+
   /* Semantic Colors - using brand colors */
   --primary: var(--bme-orange);
   --primary-hover: #ff8c00;
   --primary-light: #ffd700;
   --primary-dark: #cc8400;
-  
+
   --secondary: var(--bme-blue);
   --secondary-hover: #002244;
   --secondary-light: #004488;
   --secondary-dark: #001122;
-  
+
   --text-primary: var(--bme-black);
   --text-secondary: #6b7280;
   --text-muted: #9ca3af;
@@ -34,12 +34,12 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-  
+
   /* BME Brand Colors - Available as Tailwind classes */
   --color-bme-blue: var(--bme-blue);
   --color-bme-orange: var(--bme-orange);
   --color-bme-black: var(--bme-black);
-  
+
   /* Semantic Colors */
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
@@ -65,4 +65,10 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@media (max-width: 575.9px) {
+  .container {
+    width: calc(100vw - 15px);
+  }
 }

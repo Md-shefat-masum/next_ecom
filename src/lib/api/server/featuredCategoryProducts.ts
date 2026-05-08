@@ -95,15 +95,8 @@ export async function fetchFeaturedCategorySections(): Promise<
   const categories = await fetchFeaturedCategoriesList();
   if (!categories?.length) return null;
 
-  const sections = await Promise.all(
-    categories.map(async (cat) => {
-      const products = await fetchCategoryProducts(cat.slug, 20);
-      return {
-        category: toFeaturedMeta(cat),
-        products,
-      };
-    })
-  );
-
-  return sections;
+  return categories.map((cat) => ({
+    category: toFeaturedMeta(cat),
+    products: [],
+  }));
 }

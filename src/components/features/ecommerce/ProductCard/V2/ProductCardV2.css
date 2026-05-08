@@ -1,0 +1,419 @@
+/* Product Card V2 — class prefix pcv2_ */
+
+.pcv2_card {
+  --pcv2-bg: #ffffff;
+  --pcv2-surface-muted: #f5f5f5;
+  --pcv2-image-bg: #ebebe9;
+  --pcv2-text: #3c3a33;
+  --pcv2-text-muted: #8e8e8e;
+  --pcv2-badge-dark: #2d2d2d;
+  --pcv2-star: #e8b931;
+  --pcv2-radius-card: 36px;
+  --pcv2-radius-inner: 20px;
+  --pcv2-radius-pill: 999px;
+
+  font-family:
+    var(--font-sans, 'Inter'),
+    system-ui,
+    -apple-system,
+    'Segoe UI',
+    Roboto,
+    sans-serif;
+  background: var(--pcv2-bg);
+  border-radius: var(--pcv2-radius-card);
+  box-shadow:
+    0 4px 24px rgba(40, 38, 33, 0.06),
+    0 1px 3px rgba(40, 38, 33, 0.04);
+  padding: 20px;
+  padding-bottom: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  max-width: 100%;
+}
+
+.pcv2_image_block {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  grid-template-rows: minmax(200px, 1fr);
+  gap: 0;
+  align-items: end;
+}
+
+.pcv2_image_bg {
+  background: var(--pcv2-image-bg);
+  border-radius: 28px 28px 10px;
+  grid-area: 1 / 1 / auto / -1;
+  justify-content: center;
+  align-items: center;
+  min-height: 220px;
+  margin-bottom: 0;
+  padding: 28px 20px 75px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+}
+
+.pcv2_image_bg::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  right: 0;
+  width: 132px;
+  height: 48px;
+  background: var(--pcv2-bg);
+  border-top-left-radius: 22px;
+  pointer-events: none;
+}
+
+.pcv2_badges {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.pcv2_badge_discount {
+  background: var(--pcv2-badge-dark);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  padding: 8px 14px;
+  border-radius: var(--pcv2-radius-pill);
+  line-height: 1;
+}
+
+.pcv2_badge_tag {
+  background: #fff;
+  color: var(--pcv2-text);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--pcv2-radius-pill);
+  line-height: 1;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+}
+
+.pcv2_image_link {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  flex: 1;
+  min-height: 180px;
+}
+
+.pcv2_image {
+  object-fit: contain;
+  object-position: center;
+}
+
+.pcv2_utility_row {
+  display: flex;
+  gap: 10px;
+  z-index: 3;
+  position: absolute;
+  bottom: 0px;
+  right: 0px;
+}
+
+.pcv2_dims {
+  background: var(--pcv2-surface-muted);
+  border-radius: var(--pcv2-radius-inner);
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-height: 72px;
+  justify-content: center;
+}
+
+.pcv2_dims_labels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.pcv2_dims_label {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--pcv2-text-muted);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Discount countdown — amber bar, day : hour : min : sec (reference) */
+.pcv2_discount_countdown {
+  min-width: 0;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.pcv2_discount_countdown_track {
+  --pcv2-countdown-bg: #fdb940;
+  --pcv2-countdown-num: #2a2218;
+  --pcv2-countdown-label: #6b4e2e;
+  --pcv2-countdown-sep: #2a2218;
+
+  background: color-mix(in srgb, var(--pcv2-countdown-bg), transparent 50%);
+  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr;
+  grid-template-rows: auto auto;
+  row-gap: 0px;
+  column-gap: 2px;
+  align-items: center;
+  justify-items: center;
+  min-height: 50px;
+}
+
+.pcv2_discount_countdown_track > .pcv2_discount_countdown_num:nth-child(1) {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.pcv2_discount_countdown_track > .pcv2_discount_countdown_sep:nth-child(2) {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.pcv2_discount_countdown_track > .pcv2_discount_countdown_num:nth-child(3) {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+.pcv2_discount_countdown_track > .pcv2_discount_countdown_sep:nth-child(4) {
+  grid-column: 4;
+  grid-row: 1;
+}
+
+.pcv2_discount_countdown_track > .pcv2_discount_countdown_num:nth-child(5) {
+  grid-column: 5;
+  grid-row: 1;
+}
+
+.pcv2_discount_countdown_track > .pcv2_discount_countdown_sep:nth-child(6) {
+  grid-column: 6;
+  grid-row: 1;
+}
+
+.pcv2_discount_countdown_track > .pcv2_discount_countdown_num:nth-child(7) {
+  grid-column: 7;
+  grid-row: 1;
+}
+
+.pcv2_discount_countdown_track > .pcv2_discount_countdown_label:nth-child(8) {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.pcv2_discount_countdown_track > .pcv2_discount_countdown_label:nth-child(9) {
+  grid-column: 3;
+  grid-row: 2;
+}
+
+.pcv2_discount_countdown_track > .pcv2_discount_countdown_label:nth-child(10) {
+  grid-column: 5;
+  grid-row: 2;
+}
+
+.pcv2_discount_countdown_track > .pcv2_discount_countdown_label:nth-child(11) {
+  grid-column: 7;
+  grid-row: 2;
+}
+
+.pcv2_discount_countdown_num {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--pcv2-countdown-num);
+  line-height: 1;
+  font-variant-numeric: slashed-zero tabular-nums;
+}
+
+.pcv2_discount_countdown_sep {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--pcv2-countdown-sep);
+  line-height: 1;
+}
+
+.pcv2_discount_countdown_label {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--pcv2-countdown-label);
+  line-height: 1.2;
+  text-align: center;
+}
+
+.pcv2_rating_box {
+  background: var(--pcv2-surface-muted);
+  border-radius: var(--pcv2-radius-inner);
+  width: 64px;
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px;
+}
+
+.pcv2_rating_star {
+  color: var(--pcv2-star);
+  flex-shrink: 0;
+}
+
+.pcv2_rating_value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--pcv2-text);
+  line-height: 1;
+}
+
+.pcv2_icon_btn {
+  width: 64px;
+  min-height: 72px;
+  border: none;
+  border-radius: var(--pcv2-radius-inner);
+  background: var(--pcv2-surface-muted);
+  color: var(--pcv2-text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.15s ease;
+}
+
+.pcv2_icon_btn:hover {
+  background: #ececec;
+  transform: translateY(-1px);
+}
+
+.pcv2_icon_btn:active {
+  transform: translateY(0);
+}
+
+.pcv2_icon_btn svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 1.75;
+}
+
+.pcv2_footer {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 6px;
+  padding-left: 2px;
+  padding-right: 2px;
+}
+
+.pcv2_footer_top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.pcv2_footer_top_spacer {
+  flex: 0 0 0;
+  min-width: 0;
+}
+
+.pcv2_brand {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pcv2-text-muted);
+}
+
+.pcv2_price_original {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--pcv2-text-muted);
+  text-decoration: line-through;
+  padding-top: 2px;
+  flex-shrink: 0;
+}
+
+.pcv2_footer_bottom {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pcv2_title {
+  margin: 0;
+  flex: 1;
+  min-width: 0;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.35;
+  color: var(--pcv2-text);
+  letter-spacing: -0.02em;
+  text-decoration: none;
+}
+
+.pcv2_title:hover {
+  text-decoration: underline;
+}
+
+.pcv2_price_current {
+  flex-shrink: 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--pcv2-text);
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+}
+
+@media (max-width: 380px) {
+  .pcv2_card {
+    padding: 16px;
+    --pcv2-radius-card: 28px;
+  }
+
+  .pcv2_utility_row {
+    gap: 8px;
+  }
+
+  .pcv2_rating_box,
+  .pcv2_icon_btn {
+    width: 56px;
+    min-height: 64px;
+  }
+
+  .pcv2_image_bg::after {
+    width: 120px;
+    height: 44px;
+  }
+
+  .pcv2_discount_countdown_num,
+  .pcv2_discount_countdown_sep {
+    font-size: 18px;
+  }
+
+  .pcv2_discount_countdown_track {
+    padding: 10px 8px 12px;
+    column-gap: 0;
+  }
+
+  .pcv2_discount_countdown_label {
+    font-size: 11px;
+  }
+}
