@@ -25,3 +25,18 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.banner-mosaic-bullet {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 999px;
+  background: #c8d8ea;
+  opacity: 1;
+  transition: width 200ms ease, background-color 200ms ease;
+}
+
+.banner-mosaic-bullet-active {
+  width: 34px;
+  background: #0b5fae;
+}

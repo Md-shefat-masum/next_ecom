@@ -5,7 +5,7 @@ import { defaultGeneralInfo } from "@/config";
 export default function NotFound() {
   return (
     <SiteLayout>
-      <section className="mx-auto flex min-h-[420px] w-full max-w-[1520px] items-center justify-center px-4 py-12 sm:px-6 md:px-8">
+      <section className="container flex min-h-[420px] items-center justify-center py-12">
         <div className="text-center">
           <p
             className="text-sm font-semibold uppercase tracking-wide"

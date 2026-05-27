@@ -20,6 +20,7 @@ export const API_ENDPOINTS = {
   CATEGORIES: {
     ALL: "/categories/all-categories",
     LIST: "/categories",
+    FEATURED: "/categories/featured-categories",
     DETAIL: (slug) => `/categories/${slug}`,
     PRODUCTS: (slug) => `/categories/${slug}/products`,
   },
@@ -29,6 +30,8 @@ export const API_ENDPOINTS = {
     SEARCH: "/products/search",
     FILTERS: "/products/filters",
     RELATED: (slug) => `/products/${slug}/related`,
+    CATEGORY_PRODUCTS: (categoryId) => `/products/get-category-products/${categoryId}`,
+    SUBCATEGORY_PRODUCTS: (subcategoryId) => `/products/get-subcategory-products/${subcategoryId}`,
   },
   CART: {
     GET: "/cart",

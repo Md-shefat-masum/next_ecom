@@ -13,7 +13,7 @@ export function HeaderTop() {
         borderColor: defaultGeneralInfo.border_color,
       }}
     >
-      <div className="mx-auto flex min-h-[86px] w-full max-w-[1520px] flex-col justify-center gap-3 px-4 py-3 sm:px-6 md:px-8 lg:min-h-[92px] lg:flex-row lg:items-center lg:gap-6 xl:gap-8">
+      <div className="container flex min-h-[86px] flex-col justify-center gap-3 py-3 lg:min-h-[92px] lg:flex-row lg:items-center lg:gap-6 xl:gap-8">
         <div className="flex w-full items-center justify-between gap-4 lg:w-auto">
           <div className="flex items-center gap-3">
             <MobileCategoryDrawer />

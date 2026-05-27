@@ -1,6 +1,10 @@
+"use client";
+
 import { CategoryMenuBar } from "@/components/layout/category-menu";
 import { Footer } from "@/components/layout/footer";
 import { HeaderTop } from "@/components/layout/header";
+import { CartSync } from "@/components/cart/CartSync";
+import { ProductQuickViewModal } from "@/components/product-quick-view";
 import { defaultGeneralInfo } from "@/config";
 
 export function SiteLayout({ children }) {
@@ -9,10 +13,12 @@ export function SiteLayout({ children }) {
       className="flex min-h-screen flex-col"
       style={{ backgroundColor: defaultGeneralInfo.page_background_color }}
     >
+      <CartSync />
       <HeaderTop />
       <CategoryMenuBar />
       <main className="flex-1">{children}</main>
       <Footer />
+      <ProductQuickViewModal />
     </div>
   );
 }

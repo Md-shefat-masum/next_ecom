@@ -2,7 +2,7 @@ import { defaultGeneralInfo } from "@/config";
 
 export function SimplePage({ title, description }) {
   return (
-    <section className="mx-auto w-full max-w-[1520px] px-4 py-10 sm:px-6 md:px-8">
+    <section className="container py-10">
       <div
         className="rounded-lg border p-6"
         style={{

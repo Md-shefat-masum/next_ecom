@@ -1,0 +1,77 @@
+.product-quick-view-hud {
+  --qv-blue: #0b5fae;
+  --qv-deep: #003d78;
+  --qv-accent: #ff8a00;
+  --qv-ink: #102033;
+  --qv-muted: #607188;
+  background:
+    radial-gradient(circle at 28% 18%, rgba(11, 95, 174, 0.24), transparent 34%),
+    radial-gradient(circle at 82% 76%, rgba(255, 138, 0, 0.17), transparent 28%),
+    rgba(5, 15, 30, 0.58);
+  backdrop-filter: blur(12px) saturate(1.2);
+}
+
+.product-quick-view-hud .modal-container {
+  background:
+    linear-gradient(135deg, transparent 0 26px, rgba(249, 253, 255, 0.9) 26px) top left,
+    linear-gradient(225deg, transparent 0 38px, rgba(249, 253, 255, 0.9) 38px) top right,
+    linear-gradient(45deg, transparent 0 34px, rgba(249, 253, 255, 0.9) 34px) bottom left,
+    linear-gradient(315deg, transparent 0 24px, rgba(249, 253, 255, 0.9) 24px) bottom right;
+  background-repeat: no-repeat;
+  background-size: 52% 52%;
+  border: 1px solid rgba(11, 95, 174, 0.44);
+  border-radius: 0;
+  clip-path: polygon(0 26px, 26px 0, calc(100% - 38px) 0, 100% 38px, 100% calc(100% - 24px), calc(100% - 24px) 100%, 34px 100%, 0 calc(100% - 34px));
+  box-shadow:
+    0 34px 90px rgba(0, 25, 50, 0.35),
+    0 0 0 3px rgba(255, 138, 0, 0.08),
+    inset 0 0 44px rgba(11, 95, 174, 0.08);
+}
+
+.product-quick-view-hud .modal-container::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background:
+    linear-gradient(rgba(11, 95, 174, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(11, 95, 174, 0.045) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+.product-quick-view-hud .modal-close {
+  color: var(--qv-deep);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(11, 95, 174, 0.32);
+  border-radius: 0;
+  clip-path: polygon(9px 0, 100% 0, 100% calc(100% - 9px), calc(100% - 9px) 100%, 0 100%, 0 9px);
+}
+
+.product-quick-view-hud .modal-close:hover {
+  color: #061c31;
+  background: linear-gradient(135deg, var(--qv-accent), #ffcf6b);
+}
+
+.product-quick-view-modal-v1-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.92fr);
+  gap: 34px;
+  padding: 38px;
+}
+
+@media (max-width: 968px) {
+  .product-quick-view-modal-v1-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 26px;
+  }
+}
+
+@media (max-width: 640px) {
+  .product-quick-view-modal-v1-content {
+    padding: 20px;
+  }
+}

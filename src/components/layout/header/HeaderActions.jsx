@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   ChevronDown,
@@ -8,8 +10,9 @@ import {
   UserRound,
 } from "lucide-react";
 import { defaultGeneralInfo } from "@/config";
+import { useAppSelector } from "@/store/hooks";
 
-const actions = [
+const staticActions = [
   {
     href: "/track-order",
     label: "Track Order",
@@ -39,17 +42,23 @@ const actions = [
     badge: 3,
     badgeColor: defaultGeneralInfo.button_primary_color,
   },
-  {
-    href: "/cart",
-    label: "Cart",
-    ariaLabel: "Cart",
-    Icon: ShoppingCart,
-    badge: 2,
-    badgeColor: defaultGeneralInfo.accent_color,
-  },
 ];
 
 export function HeaderActions() {
+  const cartCount = useAppSelector((state) => state.cart.count);
+
+  const actions = [
+    ...staticActions,
+    {
+      href: "/cart",
+      label: "Cart",
+      ariaLabel: "Cart",
+      Icon: ShoppingCart,
+      badge: cartCount > 0 ? cartCount : null,
+      badgeColor: defaultGeneralInfo.accent_color,
+    },
+  ];
+
   return (
     <nav
       className="flex shrink-0 items-center justify-end gap-3 md:gap-5 lg:gap-7 xl:gap-8"
@@ -90,4 +99,3 @@ export function HeaderActions() {
     </nav>
   );
 }
-

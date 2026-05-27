@@ -18,7 +18,7 @@ export function Footer() {
         borderColor: defaultGeneralInfo.border_color,
       }}
     >
-      <div className="mx-auto flex w-full max-w-[1520px] flex-col gap-4 px-4 py-6 text-sm sm:px-6 md:px-8 lg:flex-row lg:items-center lg:justify-between">
+      <div className="container flex flex-col gap-4 py-6 text-sm lg:flex-row lg:items-center lg:justify-between">
         <div>
           <p className="font-semibold" style={{ color: defaultGeneralInfo.title_color }}>
             {defaultGeneralInfo.company_name}

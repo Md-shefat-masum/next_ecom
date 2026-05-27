@@ -304,7 +304,7 @@ export function CategoryMenuBar() {
         borderBottom: `1px solid ${defaultGeneralInfo.border_soft_color}`,
       }}
     >
-      <div className="relative mx-auto w-full max-w-[1520px] px-6 md:px-8">
+      <div className="container relative">
         <nav
           ref={navRef}
           onMouseLeave={() => {

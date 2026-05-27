@@ -1,10 +1,14 @@
-import { SimplePage } from "@/components/common/SimplePage";
+import { BannerMosaicSlider } from "@/components/home/BannerMosaicSlider";
+import { FeaturedCategory } from "@/components/home/FeaturedCategory";
+import { FeaturedCategoryProducts } from "@/components/home/FeaturedCategoryProducts";
 import { SiteLayout } from "@/components/layout/site-layout";
 
 export default function Home() {
   return (
     <SiteLayout>
-      <SimplePage title="Home" description="This is the public home page demo content." />
+      <BannerMosaicSlider />
+      <FeaturedCategory />
+      <FeaturedCategoryProducts />
     </SiteLayout>
   );
 }
