@@ -1,5 +1,6 @@
 export * from "./api";
 export * from "./constants";
+export * from "./generalInfo";
 export * from "./routes";
 
 export const appConfig = {
@@ -16,4 +17,3 @@ export const appConfig = {
 };
 
 export default appConfig;
-

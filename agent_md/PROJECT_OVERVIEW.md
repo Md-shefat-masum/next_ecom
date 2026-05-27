@@ -7,8 +7,11 @@ Current baseline:
 - Next.js App Router under `src/app`
 - JavaScript-first codebase with `@/*` path alias
 - Redux Toolkit for global UI/config state
-- Fetch-based API client with token attachment
+- RTK Query for category API reads
+- Fetch-based API client remains available for non-RTK service calls
 - Central config under `src/config`
+- BME reusable UI class system under `src/styles/bme-ui.css`
+- Header top, desktop category navbar/mega menu, and mobile category drawer are implemented
 
 Reference source:
 

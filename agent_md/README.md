@@ -8,5 +8,6 @@ Recommended order:
 2. `ARCHITECTURE.md`
 3. `DEVELOPMENT_WORKFLOW.md`
 4. `API_AND_STATE.md`
-5. `NEXT_STEPS.md`
-
+5. `UI_SYSTEM.md`
+6. `HEADER_AND_NAV.md`
+7. `NEXT_STEPS.md`

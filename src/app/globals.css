@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "../styles/bme-ui.css";
 
 :root {
   --background: #ffffff;
