@@ -6,11 +6,11 @@ import { useRouter } from "next/navigation";
 import { defaultGeneralInfo } from "@/config";
 import {
   clearCheckoutState,
-  createLocalOrder,
   loadCheckoutState,
   saveCheckoutState,
 } from "@/lib/cart/checkoutStorage";
 import { clearCart } from "@/lib/cart/cartUtils";
+import { validateCoupon, placeOrder, initiateBkash, initiateSSL } from "@/lib/api/checkoutService";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import {
   applyCoupon,
@@ -25,9 +25,9 @@ import { CheckoutSteps } from "./CheckoutSteps";
 import { CheckoutSummary } from "./CheckoutSummary";
 
 const paymentOptions = [
-  { id: "cash_on_delivery", label: "Cash on Delivery" },
-  { id: "bkash", label: "bKash" },
-  { id: "sslcommerz", label: "SSLCommerz" },
+  { id: "cash_on_delivery", label: "Cash on Delivery (COD)", icon: "💵", desc: "Pay when you receive" },
+  { id: "bkash",            label: "bKash",                  icon: "📱", desc: "Pay via bKash mobile banking" },
+  { id: "sslcommerz",       label: "SSLCommerz",             icon: "💳", desc: "Pay via card / mobile banking" },
 ];
 
 export function CheckoutPaymentPage() {
@@ -35,11 +35,19 @@ export function CheckoutPaymentPage() {
   const dispatch = useAppDispatch();
   const cartItems = useAppSelector((state) => state.cart.items);
   const cartCount = useAppSelector((state) => state.cart.count);
+  const subtotal = useAppSelector((state) => state.cart.total);
   const shippingInfo = useAppSelector((state) => state.checkout.shippingInfo);
   const checkoutState = useAppSelector((state) => state.checkout);
+
   const [couponInput, setCouponInput] = useState(checkoutState.couponCode || "");
+  const [couponLoading, setCouponLoading] = useState(false);
+  const [couponError, setCouponError] = useState("");
   const [agreed, setAgreed] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderError, setOrderError] = useState("");
+  const [selectedPayment, setSelectedPayment] = useState(
+    checkoutState.paymentOption || "cash_on_delivery"
+  );
 
   useEffect(() => {
     dispatch(hydrateCheckout());
@@ -51,25 +59,34 @@ export function CheckoutPaymentPage() {
     }
   }, [shippingInfo, router]);
 
-  const subtotal = useAppSelector((state) => state.cart.total);
+  const handleApplyCoupon = async () => {
+    const code = couponInput.trim().toUpperCase();
+    if (!code) return;
 
-  const handleApplyCoupon = () => {
-    if (!couponInput.trim()) return;
+    setCouponLoading(true);
+    setCouponError("");
 
-    if (couponInput.trim().toUpperCase() === "BME10") {
-      const discount = Math.round(subtotal * 0.1);
-      dispatch(applyCoupon({ code: couponInput.trim().toUpperCase(), discount }));
+    try {
+      const promo = await validateCoupon(code, subtotal);
+      const discount = promo.discount_amount;
+      dispatch(applyCoupon({ code, discount }));
       const currentState = loadCheckoutState();
-      saveCheckoutState({ ...currentState, couponCode: couponInput.trim().toUpperCase(), couponDiscount: discount });
-      return;
+      saveCheckoutState({ ...currentState, couponCode: code, couponDiscount: discount });
+    } catch (err) {
+      const msg =
+        err?.data?.message ||
+        err?.message ||
+        "Invalid coupon code. Please try again.";
+      setCouponError(msg);
+    } finally {
+      setCouponLoading(false);
     }
-
-    window.alert("Invalid coupon code");
   };
 
   const handleRemoveCoupon = () => {
     dispatch(removeCoupon());
     setCouponInput("");
+    setCouponError("");
     const currentState = loadCheckoutState();
     saveCheckoutState({ ...currentState, couponCode: null, couponDiscount: 0 });
   };
@@ -86,26 +103,58 @@ export function CheckoutPaymentPage() {
     dispatch(setPaymentOption(paymentOption));
 
     setIsSubmitting(true);
+    setOrderError("");
 
     try {
-      const order = createLocalOrder({
-        items: cartItems,
+      const response = await placeOrder({
+        cartItems,
         shippingInfo,
         deliveryMethod: checkoutState.deliveryMethod,
         deliveryCharge: checkoutState.deliveryCharge,
-        paymentOption,
-        couponDiscount: checkoutState.couponDiscount,
+        paymentMethod: paymentOption,
+        couponCode: checkoutState.couponCode ?? null,
+        couponDiscount: checkoutState.couponDiscount ?? 0,
+        orderNote: null,
+        outletId: checkoutState.pickupPointId ?? null,
       });
 
-      if (typeof window !== "undefined") {
-        const existingOrders = JSON.parse(window.localStorage.getItem("bme_orders") || "[]");
-        existingOrders.unshift(order);
-        window.localStorage.setItem("bme_orders", JSON.stringify(existingOrders));
-        window.localStorage.setItem("bme_last_order", JSON.stringify(order));
-      }
+      const order     = response.data ?? response;
+      const orderId   = order?.id ?? order?.order?.id ?? null;
+      const orderCode = order?.order_code ?? order?.order?.order_code ?? order?.order_no ?? null;
 
-      dispatch(setOrderResult({ orderId: order.id, orderCode: order.code }));
+      dispatch(setOrderResult({ orderId, orderCode }));
 
+      // Save full invoice snapshot before clearing state
+      const discount    = checkoutState.couponDiscount ?? 0;
+      const delivFee    = checkoutState.deliveryCharge ?? 0;
+      const cartSubtotal = cartItems.reduce((s, i) => s + i.price * i.quantity, 0);
+      const snapshot = {
+        order_code:      orderCode,
+        order_id:        orderId,
+        sale_date:       new Date().toISOString().split("T")[0],
+        payment_method:  paymentOption,
+        payment_status:  "unpaid",
+        delivery_method: checkoutState.deliveryMethod,
+        delivery_charge: delivFee,
+        coupon:          checkoutState.couponCode ?? null,
+        coupon_discount: discount,
+        subtotal:        cartSubtotal,
+        total:           Math.max(0, cartSubtotal + delivFee - discount),
+        shipping:        shippingInfo ?? {},
+        order_note:      null,
+        items: cartItems.map((i) => ({
+          product_id:   i.productId,
+          product_name: i.name,
+          image:        i.image ?? null,
+          variant:      i.variantLabel ?? null,
+          qty:          i.quantity,
+          sale_price:   i.price,
+          total_price:  i.price * i.quantity,
+        })),
+      };
+      localStorage.setItem("bme_last_order", JSON.stringify(snapshot));
+
+      // For COD – clear state immediately and show invoice
       if (paymentOption === "cash_on_delivery") {
         clearCart();
         dispatch(syncCartFromStorage());
@@ -115,8 +164,48 @@ export function CheckoutPaymentPage() {
         return;
       }
 
-      window.alert("Online payment gateway integration is pending. Order saved locally.");
-      router.push("/checkout/order-confirmed");
+      // For bKash / SSLCommerz – initiate payment, redirect to gateway
+      // (clear state AFTER redirect returns, not here)
+      try {
+        if (paymentOption === "bkash") {
+          const bkash = await initiateBkash(orderId);
+          if (bkash?.bkash_url) {
+            clearCart();
+            dispatch(syncCartFromStorage());
+            dispatch(resetCheckout());
+            clearCheckoutState();
+            window.location.href = bkash.bkash_url;
+            return;
+          }
+          throw new Error("bKash payment URL not received");
+        }
+
+        if (paymentOption === "sslcommerz") {
+          const ssl = await initiateSSL(orderId);
+          if (ssl?.gateway_url) {
+            clearCart();
+            dispatch(syncCartFromStorage());
+            dispatch(resetCheckout());
+            clearCheckoutState();
+            window.location.href = ssl.gateway_url;
+            return;
+          }
+          throw new Error("SSLCommerz gateway URL not received");
+        }
+      } catch (gatewayErr) {
+        setOrderError(
+          gatewayErr?.data?.error?.message ||
+          gatewayErr?.message ||
+          "Payment gateway initiation failed. Please try again."
+        );
+        setIsSubmitting(false);
+      }
+    } catch (err) {
+      const msg =
+        err?.data?.message ||
+        err?.message ||
+        "Failed to place order. Please try again.";
+      setOrderError(msg);
     } finally {
       setIsSubmitting(false);
     }
@@ -139,23 +228,28 @@ export function CheckoutPaymentPage() {
       <CheckoutSteps currentStep={2} />
 
       <div className="grid gap-8 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-6">
+        <div className="space-y-6 lg:col-span-2">
           <div className="rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-6 text-xl font-bold text-[#071B3A]">Payment Method</h2>
             <form className="space-y-4" onSubmit={handleSubmit}>
               {paymentOptions.map((option) => (
                 <label
                   key={option.id}
-                  className="flex cursor-pointer items-center gap-4 rounded-lg border border-[#E8EEF6] p-4 hover:border-[#0B5FAE]"
+                  className="flex cursor-pointer items-center gap-4 rounded-xl border-2 border-[#E8EEF6] p-4 transition hover:border-[#0B5FAE] has-[:checked]:border-[#0B5FAE] has-[:checked]:bg-[#F0F6FF]"
                 >
                   <input
                     type="radio"
                     name="payment_option"
                     value={option.id}
-                    defaultChecked={checkoutState.paymentOption === option.id}
-                    className="h-4 w-4"
+                    checked={selectedPayment === option.id}
+                    onChange={() => setSelectedPayment(option.id)}
+                    className="h-4 w-4 accent-[#0B5FAE]"
                   />
-                  <span className="text-sm font-medium">{option.label}</span>
+                  <span className="text-xl">{option.icon}</span>
+                  <span>
+                    <span className="block text-sm font-semibold text-[#071B3A]">{option.label}</span>
+                    <span className="text-xs text-[#64748B]">{option.desc}</span>
+                  </span>
                 </label>
               ))}
 
@@ -163,11 +257,15 @@ export function CheckoutPaymentPage() {
                 <input
                   type="checkbox"
                   checked={agreed}
-                  onChange={(event) => setAgreed(event.target.checked)}
+                  onChange={(e) => setAgreed(e.target.checked)}
                   className="mt-1"
                 />
                 <span>I agree to the terms and conditions and return policy.</span>
               </label>
+
+              {orderError && (
+                <p className="rounded-lg bg-red-50 p-3 text-sm text-red-600">{orderError}</p>
+              )}
 
               <div className="flex gap-4">
                 <Link
@@ -182,27 +280,37 @@ export function CheckoutPaymentPage() {
                   className="flex-1 rounded-lg py-3 text-sm font-semibold text-white disabled:opacity-60"
                   style={{ backgroundColor: defaultGeneralInfo.button_primary_color }}
                 >
-                  {isSubmitting ? "Placing Order..." : "Place Order"}
+                  {isSubmitting
+                    ? selectedPayment === "cash_on_delivery"
+                      ? "Placing Order..."
+                      : "Redirecting to Payment..."
+                    : selectedPayment === "bkash"
+                    ? "Place Order & Pay with bKash"
+                    : selectedPayment === "sslcommerz"
+                    ? "Place Order & Pay via Card"
+                    : "Place Order"}
                 </button>
               </div>
             </form>
           </div>
 
+          {/* Coupon Section */}
           <div className="rounded-xl bg-white p-6 shadow-sm">
             <h3 className="mb-4 text-lg font-bold text-[#071B3A]">Coupon Code</h3>
             <div className="flex gap-3">
               <input
                 type="text"
                 value={couponInput}
-                onChange={(event) => setCouponInput(event.target.value)}
+                onChange={(e) => { setCouponInput(e.target.value); setCouponError(""); }}
                 placeholder="Enter coupon code"
-                className="flex-1 rounded-lg border border-[#D8E4F2] px-4 py-3 text-sm outline-none focus:border-[#0B5FAE]"
+                disabled={!!checkoutState.couponCode}
+                className="flex-1 rounded-lg border border-[#D8E4F2] px-4 py-3 text-sm outline-none focus:border-[#0B5FAE] disabled:bg-slate-50"
               />
               {checkoutState.couponCode ? (
                 <button
                   type="button"
                   onClick={handleRemoveCoupon}
-                  className="rounded-lg border border-[#E8EEF6] px-4 py-3 text-sm font-medium"
+                  className="rounded-lg border border-[#E8EEF6] px-4 py-3 text-sm font-medium hover:bg-slate-50"
                 >
                   Remove
                 </button>
@@ -210,14 +318,24 @@ export function CheckoutPaymentPage() {
                 <button
                   type="button"
                   onClick={handleApplyCoupon}
-                  className="rounded-lg px-4 py-3 text-sm font-semibold text-white"
+                  disabled={couponLoading || !couponInput.trim()}
+                  className="rounded-lg px-4 py-3 text-sm font-semibold text-white disabled:opacity-60"
                   style={{ backgroundColor: defaultGeneralInfo.accent_color }}
                 >
-                  Apply
+                  {couponLoading ? "Checking..." : "Apply"}
                 </button>
               )}
             </div>
-            <p className="mt-2 text-xs text-[#64748B]">Demo coupon: BME10 (10% off)</p>
+
+            {couponError && (
+              <p className="mt-2 text-xs text-red-500">{couponError}</p>
+            )}
+            {checkoutState.couponCode && (
+              <p className="mt-2 text-xs text-green-600">
+                ✓ Coupon <strong>{checkoutState.couponCode}</strong> applied — you save ৳
+                {checkoutState.couponDiscount?.toLocaleString()}
+              </p>
+            )}
           </div>
         </div>
 

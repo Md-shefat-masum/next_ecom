@@ -1,10 +1,13 @@
-import { SimplePage } from "@/components/common/SimplePage";
+import { Suspense } from "react";
 import { SiteLayout } from "@/components/layout/site-layout";
+import { ProductsPageClient } from "@/components/products";
 
 export default function ProductsPage() {
   return (
     <SiteLayout>
-      <SimplePage title="Products" description="This is the public products page demo content." />
+      <Suspense fallback={null}>
+        <ProductsPageClient />
+      </Suspense>
     </SiteLayout>
   );
 }

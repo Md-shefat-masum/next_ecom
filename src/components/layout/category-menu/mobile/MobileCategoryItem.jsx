@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Minus, Plus } from "lucide-react";
 import { defaultGeneralInfo } from "@/config";
+import { productListHref } from "@/lib/products/productListHref";
 
 function ToggleIcon({ expanded }) {
   const Icon = expanded ? Minus : Plus;
@@ -21,7 +22,7 @@ export function MobileCategoryItem({
   if (!hasSubcategories) {
     return (
       <Link
-        href={`/${category.slug}`}
+        href={productListHref(category, "category")}
         onClick={onNavigate}
         className="flex h-14 items-center justify-between border-b px-6 text-[15px] font-semibold"
         style={{
@@ -60,6 +61,18 @@ export function MobileCategoryItem({
         }}
       >
         <div className="relative ml-6 border-l py-1" style={{ borderColor: defaultGeneralInfo.border_soft_color }}>
+          <Link
+            href={productListHref(category, "category")}
+            onClick={onNavigate}
+            className="flex h-12 items-center border-b py-1 pl-7 pr-6 text-sm font-bold"
+            style={{
+              borderColor: defaultGeneralInfo.border_soft_color,
+              color: defaultGeneralInfo.primary_color,
+            }}
+          >
+            All {category.name}
+          </Link>
+
           {subcategories.map((subcategory) => {
             const childCategories = subcategory.child_categories || [];
             const hasChildren = childCategories.length > 0;
@@ -69,7 +82,7 @@ export function MobileCategoryItem({
               return (
                 <Link
                   key={`subcategory-link-${category.id}-${subcategory.id}-${subcategory.slug}`}
-                  href={`/${subcategory.slug}`}
+                  href={productListHref(subcategory, "subcategory", { category })}
                   onClick={onNavigate}
                   className="flex h-12 items-center border-b py-1 pl-7 pr-6 text-sm font-medium"
                   style={{
@@ -106,15 +119,26 @@ export function MobileCategoryItem({
                 <div
                   className="overflow-hidden transition-all duration-200 ease-out"
                   style={{
-                    maxHeight: isExpanded ? `${childCategories.length * 44}px` : "0px",
+                    maxHeight: isExpanded ? `${(childCategories.length + 1) * 44}px` : "0px",
                     opacity: isExpanded ? 1 : 0,
                   }}
                 >
                   <div className="relative ml-6 border-l py-1" style={{ borderColor: defaultGeneralInfo.border_soft_color }}>
+                    <Link
+                      href={productListHref(subcategory, "subcategory", { category })}
+                      onClick={onNavigate}
+                      className="flex min-h-10 items-center gap-3 py-2 pl-7 pr-6 text-sm font-bold"
+                      style={{ color: defaultGeneralInfo.primary_color }}
+                    >
+                      All {subcategory.name}
+                    </Link>
                     {childCategories.map((childCategory) => (
                       <Link
                         key={`child-${category.id}-${subcategory.id}-${childCategory.id}-${childCategory.slug}`}
-                        href={`/${childCategory.slug}`}
+                        href={productListHref(childCategory, childCategory.brand_id ? "brand" : "child", {
+                          category,
+                          subcategory,
+                        })}
                         onClick={onNavigate}
                         className="flex min-h-10 items-center gap-3 py-2 pl-7 pr-6 text-sm"
                         style={{ color: defaultGeneralInfo.text_body_color }}

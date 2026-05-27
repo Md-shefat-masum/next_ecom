@@ -8,8 +8,13 @@ export const categoriesApi = baseApi.injectEndpoints({
       transformResponse: (response) => response?.data || [],
       providesTags: ["Categories"],
     }),
+    getCategoryBySlug: builder.query({
+      query: (slug) => API_ENDPOINTS.CATEGORIES.DETAIL(slug),
+      transformResponse: (response) => response?.data || null,
+      providesTags: (_result, _error, slug) => [{ type: "Categories", id: slug }],
+    }),
   }),
 });
 
-export const { useGetCategoriesQuery } = categoriesApi;
+export const { useGetCategoriesQuery, useGetCategoryBySlugQuery } = categoriesApi;
 

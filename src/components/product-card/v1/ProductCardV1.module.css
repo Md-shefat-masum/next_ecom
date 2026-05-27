@@ -265,6 +265,15 @@
   background: var(--hud-card-bg);
 }
 
+.productMediaLink {
+  display: grid;
+  width: 100%;
+  height: 100%;
+  place-items: center;
+  color: inherit;
+  text-decoration: none;
+}
+
 .mainImage {
   width: 100%;
   height: 100%;
@@ -441,6 +450,15 @@
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
   overflow: hidden;
+}
+
+.productTitleLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.productTitleLink:hover {
+  color: var(--hud-blue);
 }
 
 .ratingRow {

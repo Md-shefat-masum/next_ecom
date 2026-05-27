@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { baseApi } from "@/store/api";
-import { cartReducer, checkoutReducer, configReducer, modalReducer, uiReducer } from "@/store/slices";
+import { authReducer, cartReducer, checkoutReducer, configReducer, modalReducer, uiReducer } from "@/store/slices";
 
 export const store = configureStore({
   reducer: {
@@ -10,6 +10,7 @@ export const store = configureStore({
     modal: modalReducer,
     cart: cartReducer,
     checkout: checkoutReducer,
+    auth: authReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

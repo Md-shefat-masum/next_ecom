@@ -9,6 +9,7 @@ import {
   useLazyGetSubcategoryProductsByIdQuery,
 } from "@/store/api";
 import { ProductCardV1 } from "@/components/product-card/v1";
+import { productListHref } from "@/lib/products/productListHref";
 
 function getSubcategories(category) {
   return category?.subcategories || category?.sub_categories || [];
@@ -141,7 +142,7 @@ function CategoryProductSection({ category }) {
 
         {category.slug ? (
           <Link
-            href={`/categories/${category.slug}`}
+            href={productListHref(category, "category")}
             className="inline-flex h-11 items-center justify-center gap-2 bg-(--bme-primary) px-5 text-sm font-bold text-white transition hover:bg-(--bme-primary-dark)"
             style={{
               clipPath:

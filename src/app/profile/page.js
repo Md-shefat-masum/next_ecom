@@ -1,17 +1,18 @@
-import { redirect } from "next/navigation";
-import { SimplePage } from "@/components/common/SimplePage";
+import { Suspense } from "react";
 import { SiteLayout } from "@/components/layout/site-layout";
+import { AuthGuard } from "@/components/auth/AuthGuard";
+import { ProfilePage } from "@/components/profile/ProfilePage";
 
-const isAuth = true;
+export const metadata = { title: "My Profile — BME" };
 
-export default function ProfilePage() {
-  if (!isAuth) {
-    redirect("/login");
-  }
-
+export default function ProfileRoutePage() {
   return (
     <SiteLayout>
-      <SimplePage title="Profile" description="This is the authenticated profile page demo content." />
+      <AuthGuard>
+        <Suspense>
+          <ProfilePage />
+        </Suspense>
+      </AuthGuard>
     </SiteLayout>
   );
 }

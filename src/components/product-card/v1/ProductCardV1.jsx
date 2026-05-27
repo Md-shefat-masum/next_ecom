@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import { defaultGeneralInfo } from "@/config";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { openProductQuickView } from "@/store/slices/modalSlice";
@@ -243,6 +244,7 @@ export default function ProductCardV1({ product }) {
         : "Stock Out";
 
   const productSlug = productPayload.slug;
+  const productUrl = productSlug ? `/products/${productSlug}` : "";
 
   const handleQuickView = () => {
     if (productSlug) dispatch(openProductQuickView(productSlug));
@@ -281,7 +283,15 @@ export default function ProductCardV1({ product }) {
 
         <section className={styles.heroWrap} aria-label={`${title} image gallery`}>
           <div className={styles.mainImageBox}>
-            {selectedImage ? (
+            {productUrl ? (
+              <Link className={styles.productMediaLink} href={productUrl} aria-label={`View ${title} details`}>
+                {selectedImage ? (
+                  <img className={styles.mainImage} src={selectedImage} alt={title} loading="lazy" />
+                ) : (
+                  <div className={styles.imagePlaceholder}>No Image</div>
+                )}
+              </Link>
+            ) : selectedImage ? (
               <img className={styles.mainImage} src={selectedImage} alt={title} loading="lazy" />
             ) : (
               <div className={styles.imagePlaceholder}>No Image</div>
@@ -331,7 +341,15 @@ export default function ProductCardV1({ product }) {
           </section>
         ) : null}
 
-        <h2 className={styles.title}>{title}</h2>
+        <h2 className={styles.title}>
+          {productUrl ? (
+            <Link className={styles.productTitleLink} href={productUrl}>
+              {title}
+            </Link>
+          ) : (
+            title
+          )}
+        </h2>
 
         {/* <div className={styles.ratingRow}>
           <div className={styles.stars} aria-label={`${rating.toFixed(1)} rating`}>

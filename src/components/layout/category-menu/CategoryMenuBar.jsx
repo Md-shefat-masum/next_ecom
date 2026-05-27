@@ -4,6 +4,7 @@ import Link from "next/link";
 import { ChevronDown, ChevronRight } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { defaultGeneralInfo } from "@/config";
+import { productListHref } from "@/lib/products/productListHref";
 import { useGetCategoriesQuery } from "@/store/api";
 import { previewCategories } from "./previewCategories";
 
@@ -56,7 +57,7 @@ function CategoryMegaPanel({ category, activeSubcategory, onSubcategoryChange, l
         }}
       >
         <Link
-          href={`/${category.slug}`}
+          href={productListHref(category, "category")}
           className="font-medium transition hover:text-[var(--menu-primary)]"
           style={{ "--menu-primary": defaultGeneralInfo.primary_color }}
         >
@@ -65,7 +66,7 @@ function CategoryMegaPanel({ category, activeSubcategory, onSubcategoryChange, l
         <ChevronRight size={16} />
         {activeSubcategory ? (
           <Link
-            href={`/${activeSubcategory.slug}`}
+            href={productListHref(activeSubcategory, "subcategory", { category })}
             className="font-medium transition hover:text-[var(--menu-primary)]"
             style={{ "--menu-primary": defaultGeneralInfo.primary_color }}
           >
@@ -85,7 +86,7 @@ function CategoryMegaPanel({ category, activeSubcategory, onSubcategoryChange, l
             return (
               <Link
                 key={subcategory.id}
-                href={`/${subcategory.slug}`}
+                href={productListHref(subcategory, "subcategory", { category })}
                 onMouseEnter={() => onSubcategoryChange(subcategory)}
                 onFocus={() => onSubcategoryChange(subcategory)}
                 className="relative flex h-12 items-center justify-between px-8 text-sm font-medium transition"
@@ -116,7 +117,11 @@ function CategoryMegaPanel({ category, activeSubcategory, onSubcategoryChange, l
           style={{ borderColor: defaultGeneralInfo.border_soft_color }}
         >
           <Link
-            href={`/${activeSubcategory?.slug || category.slug}`}
+            href={
+              activeSubcategory
+                ? productListHref(activeSubcategory, "subcategory", { category })
+                : productListHref(category, "category")
+            }
             className="flex h-12 items-center px-8 text-sm font-semibold transition hover:text-[var(--menu-primary)]"
             style={{
               color: defaultGeneralInfo.primary_bright_color,
@@ -129,7 +134,10 @@ function CategoryMegaPanel({ category, activeSubcategory, onSubcategoryChange, l
           {childCategories.map((childCategory, index) => (
             <Link
               key={getChildCategoryKey(childCategory, index)}
-              href={`/${childCategory.slug}`}
+              href={productListHref(childCategory, childCategory.brand_id ? "brand" : "child", {
+                category,
+                subcategory: activeSubcategory,
+              })}
               className="flex h-12 items-center justify-between px-8 text-sm font-medium transition hover:bg-[var(--menu-hover)] hover:text-[var(--menu-primary)]"
               style={{
                 color: defaultGeneralInfo.title_color,
@@ -152,7 +160,7 @@ function CategoryMegaPanel({ category, activeSubcategory, onSubcategoryChange, l
           </p>
           <div className="mt-4 space-y-3">
             <Link
-              href={`/${category.slug}`}
+              href={productListHref(category, "category")}
               className="block text-sm transition hover:text-[var(--menu-primary)]"
               style={{
                 color: defaultGeneralInfo.text_body_color,
@@ -163,7 +171,7 @@ function CategoryMegaPanel({ category, activeSubcategory, onSubcategoryChange, l
             </Link>
             {activeSubcategory ? (
               <Link
-                href={`/${activeSubcategory.slug}`}
+                href={productListHref(activeSubcategory, "subcategory", { category })}
                 className="block text-sm transition hover:text-[var(--menu-primary)]"
                 style={{
                   color: defaultGeneralInfo.text_body_color,
@@ -176,7 +184,10 @@ function CategoryMegaPanel({ category, activeSubcategory, onSubcategoryChange, l
             {childCategories.slice(0, 5).map((childCategory, index) => (
               <Link
                 key={getChildCategoryKey(childCategory, index)}
-                href={`/${childCategory.slug}`}
+                href={productListHref(childCategory, childCategory.brand_id ? "brand" : "child", {
+                  category,
+                  subcategory: activeSubcategory,
+                })}
                 className="block text-sm transition hover:text-[var(--menu-primary)]"
                 style={{
                   color: defaultGeneralInfo.text_muted_color,
@@ -328,7 +339,7 @@ export function CategoryMenuBar() {
               return (
                 <Link
                   key={category.id}
-                  href={`/${category.slug}`}
+                  href={productListHref(category, "category")}
                   onMouseEnter={(event) => handleCategoryEnter(category, event.currentTarget)}
                   onFocus={(event) => handleCategoryEnter(category, event.currentTarget)}
                   className="relative flex h-full min-w-0 shrink items-center whitespace-nowrap font-semibold transition hover:bg-[var(--menu-hover)] hover:text-[var(--menu-primary)]"
@@ -394,7 +405,7 @@ export function CategoryMenuBar() {
                       return (
                         <Link
                           key={category.id}
-                          href={`/${category.slug}`}
+                          href={productListHref(category, "category")}
                           onMouseEnter={() => handleMoreCategoryEnter(category)}
                           onFocus={() => handleMoreCategoryEnter(category)}
                           className="flex whitespace-nowrap px-4 py-3 text-sm font-medium transition hover:bg-[var(--menu-hover)] hover:text-[var(--menu-primary)]"

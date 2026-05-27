@@ -1,15 +1,15 @@
-import { SimplePage } from "@/components/common/SimplePage";
+import { Suspense } from "react";
 import { SiteLayout } from "@/components/layout/site-layout";
+import { ProductSlugRouter } from "@/components/products";
 
 export default async function ProductDetailsPage({ params }) {
   const { slug } = await params;
 
   return (
     <SiteLayout>
-      <SimplePage
-        title="Product Details"
-        description={`This is the public product details page demo content for ${slug}.`}
-      />
+      <Suspense fallback={null}>
+        <ProductSlugRouter slug={slug} />
+      </Suspense>
     </SiteLayout>
   );
 }
