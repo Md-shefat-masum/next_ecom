@@ -1,10 +1,10 @@
 import { SimplePage } from "@/components/common/SimplePage";
 import { SiteLayout } from "@/components/layout/site-layout";
 
-export default function Home() {
+export default function CartPage() {
   return (
     <SiteLayout>
-      <SimplePage title="Home" description="This is the public home page demo content." />
+      <SimplePage title="Cart" description="This is the public cart page demo content." />
     </SiteLayout>
   );
 }
